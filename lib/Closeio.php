@@ -10,6 +10,7 @@
 namespace closeio;
 
 require(dirname(__FILE__).'/Methods.php');
+require(dirname(__FILE__).'/Functions.php');
 require(dirname(__FILE__).'/routes/Lead.php');
 
 define('CLOSEIO_TRANSPORT_PROTOCOL', 'https');
@@ -61,6 +62,7 @@ class Closeio{
     curl_setopt($c, CURLOPT_USERPWD, CLOSEIO_API_KEY . ":");
     curl_setopt($c, CURLOPT_TIMEOUT, CLOSEIO_CURL_TIMEOUT);
 
+
     $response = curl_exec($c);
     $error_number = curl_errno($c);
     $error_message = curl_error($c);
@@ -74,11 +76,20 @@ class Closeio{
   }
 
   function generate_url($route, $params){
-    return
-      CLOSEIO_TRANSPORT_PROTOCOL . '://' .
-      CLOSEIO_HOST .
-      $route . '/?' .
-      http_build_query($params);
+    if ($params) {
+        #var_dump(http_build_query($params));
+        return
+          CLOSEIO_TRANSPORT_PROTOCOL . '://' .
+          CLOSEIO_HOST .
+          $route . '/?' .
+          http_build_query($params);
+    } else {
+        return
+          CLOSEIO_TRANSPORT_PROTOCOL . '://' .
+          CLOSEIO_HOST .
+          $route . '/';
+
+    }
   }
 
   function validate_response($body){
